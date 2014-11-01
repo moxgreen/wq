@@ -12,7 +12,7 @@ If you are using wq.app and wq.db together, you may find it useful to take advan
 
 ### On Ubuntu
 ```bash
-sudo apt-get install apache2 libapache2-mod-wsgi postgresql-9.3-postgis-2.1 python-pip python-psycopg2
+sudo apt-get install apache2 libapache2-mod-wsgi postgresql-9.3-postgis-2.1 python-pip python-psycopg2 nodejs-legacy
 sudo pip install wq
 
 export PROJECTSDIR=/path/to/projects #e.g. /var/www
@@ -27,7 +27,7 @@ chmod +x deploy.sh db/manage.py
 
 # Create database
 (edit /etc/postgresql/9.3/main/pg_hba.conf and/or pg_ident.conf to set permissions)
-createuser -Upostgres $PROJECTNAME
+createuser -d -e -E -l -P -r -s $PROJECTNAME
 createdb -Upostgres -O$PROJECTNAME $PROJECTNAME
 psql -Upostgres $PROJECTNAME -c "CREATE EXTENSION postgis;"
 
@@ -35,6 +35,11 @@ psql -Upostgres $PROJECTNAME -c "CREATE EXTENSION postgis;"
 (edit db/$PROJECTNAME/local_settings.py with database info, if different than above)
 cd db/
 chmod +x manage.py
+
+#fix a bug
+http://djangotalk.blogspot.it/2013/10/importerror-cannot-import-name-actions.html
+
+#sync database
 ./manage.py syncdb
 ./manage.py migrate
 
